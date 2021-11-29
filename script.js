@@ -3,10 +3,10 @@
 let cnv = document.getElementById("canvas");
 let ctx = cnv.getContext("2d");
 cnv.width = 900;
-cnv.height = 1000;
+cnv.height = 945;
 
-let squarex = 90;
-let squarey = 405;
+let snakex = 90;
+let snakey = 405;
 let direction;
 let wPressed = false;
 let aPressed = false;
@@ -15,18 +15,18 @@ let dPressed = false;
 let remainder;
 let lastKeyPressed;
 let score = 0;
-let applex = 450
-let appley = 405
+let applex = 450;
+let appley = 405;
 
 requestAnimationFrame(loop);
 function loop() {
     // movement
     if (lastKeyPressed == "W" || lastKeyPressed == "S") {
-        remainder = squarex % 45;
+        remainder = snakex % 45;
     } else {
-        remainder = squarey % 45;
+        remainder = snakey % 45;
     }
-    
+
     if (lastKeyPressed == "W" && remainder == 0) {
         direction = "up";
     }
@@ -44,23 +44,46 @@ function loop() {
     }
 
     if (direction == "up") {
-        squarey -= 5;
+        snakey -= 5;
     }
 
     if (direction == "down") {
-        squarey += 5;
+        snakey += 5;
     }
 
     if (direction == "left") {
-        squarex -= 5;
+        snakex -= 5;
     }
 
     if (direction == "right") {
-        squarex += 5;
+        snakex += 5;
     }
 
-    if (squarex < applex + 45 && squarex + 15 > applex && squarey + 45 > appley && squarey < appley + 45) {
-        applex += 45
+    if (snakex > 855) {
+        snakex = 855
+        reset()
+    }
+
+    if (snakex < 0) {
+        snakex = 0
+        reset()
+    }
+
+    if (snakey > 855) {
+        snakey = 855
+        reset()
+    }
+
+    if (snakey < 0) {
+        snakey = 0
+        reset()
+    }
+
+
+
+    if (snakex < applex + 45 && snakex + 15 > applex && snakey + 45 > appley && snakey < appley + 45) {
+        applex = (Math.floor(Math.random() * (20))) * 45;
+        appley = (Math.floor(Math.random() * (20))) * 45;
         score++
     }
 
@@ -92,11 +115,11 @@ function loop() {
     }
 
     ctx.fillStyle = "white"
-    ctx.fillRect(0, 955, 900, 50)
+    ctx.fillRect(0, 900, 900, 45)
 
     // draw square
     ctx.fillStyle = "rgb(58, 135, 242)"
-    ctx.fillRect(squarex, squarey, 45, 45)
+    ctx.fillRect(snakex, snakey, 45, 45)
 
     // draw apple
     ctx.fillStyle = "red"
@@ -104,12 +127,12 @@ function loop() {
 
     // draw score
     ctx.fillStyle = "red"
-    ctx.fillRect(7, 957, 30, 30)
+    ctx.fillRect(7, 907, 30, 30)
 
-    ctx.font = "55px Arial"
+    ctx.font = "50px Arial"
     ctx.fillStyle = "black"
-    ctx.fillText(score, 45, 992)
-    
+    ctx.fillText(score, 45, 940)
+
 
 
 
@@ -152,3 +175,13 @@ function keydownHandler(event) {
 //     } if (event.code === "KeyD")
 //         dPressed = false;
 // }
+
+function reset() {
+    snakex = 90;
+    snakey = 405;
+    applex = 450;
+    appley = 405;
+    score = 0
+    direction = "stop"
+    lastKeyPressed = "none"
+}
