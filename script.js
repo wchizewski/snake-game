@@ -85,6 +85,7 @@ function loop() {
         applex = (Math.floor(Math.random() * (20))) * 45;
         appley = (Math.floor(Math.random() * (20))) * 45;
         score++
+        
     }
 
 
@@ -152,29 +153,6 @@ function keydownHandler(event) {
         lastKeyPressed = "D";
     }
 }
-
-// function keydownHandler(event) {
-//     if (event.code === "KeyW") {
-//         wPressed = true;
-//     } if (event.code === "KeyA") {
-//         aPressed = true;
-//     } if (event.code === "KeyS") {
-//         sPressed = true;
-//     } if (event.code === "KeyD") {
-//         dPressed = true;
-//     }
-// }
-
-// function keyupHandler(event) {
-//     if (event.code === "KeyW") {
-//         wPressed = false;
-//     } if (event.code === "KeyA") {
-//         aPressed = false;
-//     } if (event.code === "KeyS") {
-//         sPressed = false;
-//     } if (event.code === "KeyD")
-//         dPressed = false;
-// }
 
 function reset() {
     snakex = 90;
