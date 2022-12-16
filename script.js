@@ -30,7 +30,7 @@ let snakeHead = {
     x: 90,
     y: 405,
     direction: 'none',
-    speed: 1,
+    speed: 45 / 10,
 
     move() {
         const direction = directions[this.direction]
