@@ -5,42 +5,59 @@ let ctx = cnv.getContext("2d");
 cnv.width = 900;
 cnv.height = 945;
 
+document.addEventListener("keydown", keydownHandler)
+
+function keydownHandler(event) {
+    lastKeyPressed = event.key;
+}
+
 let remainder;
 let lastKeyPressed;
 let score = 0;
-let applex = 450;
+let applex = 135;
 let appley = 405;
+let snakeBody = [];
+
+let directions = {
+    left: [-1, 0],
+    right: [1, 0],
+    up: [0, -1],
+    down: [0, 1],
+    none: [0, 0],
+}
+
 let snakeHead = {
     x: 90,
     y: 405,
+    direction: 'none',
     speed: 5,
 
     move() {
-        this.y += this.vy
-        this.x += this.vx
+        const direction = directions[this.direction]
+
+        this.x += direction[0] * this.speed;
+        this.y += direction[1] * this.speed;
+
+        remainder = this.x % 45 + this.y % 45;
     },
 
     changeDirection() {
-        if (lastKeyPressed == "w" || lastKeyPressed == "s") {
-            remainder = this.x % 45;
-        } else {
-            remainder = this.y % 45;
-        }
-    
+        if (remainder != 0) return;
+
         if (lastKeyPressed == "w" && this.direction != 'down' && remainder == 0) {
-            this.vy = this.speed
+            this.direction = 'up';
         }
     
         if (lastKeyPressed == "s" && this.direction != 'up' && remainder == 0) {
-            this.vy = -this.speed
+            this.direction = 'down';
         }
     
         if (lastKeyPressed == "a" && this.direction != 'right' && remainder == 0) {
-            this.vx = -this.speed
+            this.direction = 'left';
         }
     
         if (lastKeyPressed == "d" && this.direction != 'left' && remainder == 0) {
-            this.vx = this.speed
+            this.direction = 'right';
         }
     }
 }
@@ -54,50 +71,19 @@ class SnakeSegment {
     }
 
     move() {
-        if (this.direction == "up") {
-            this.y -= 5;
-        }
-    
-        if (this.direction == "down") {
-            this.y += 5;
-        }
-    
-        if (this.direction == "left") {
-            this.x -= 5;
-        }
-    
-        if (this.direction == "right") {
-            this.x += 5;
-        }
+        const direction = directions[this.direction]
+
+        this.x += direction[0] * snakeHead.speed;
+        this.y += direction[1] * snakeHead.speed;
     }
 
     changeDirection() {
-        let lastDirection = snakeBody[this.index - 1] ? snakeBody[this.index - 1].direction : snakeHead.direction
+        if (remainder != 0) return;
 
-        if (lastDirection == "up" && this.direction != 'down' && remainder == 0) {
-            this.direction = "up";
-        }
-    
-        if (lastDirection == "down" && this.direction != 'up' && remainder == 0) {
-            this.direction = "down";
-        }
-    
-        if (lastDirection == "left" && this.direction != 'right' && remainder == 0) {
-            this.direction = "left"
-        }
-    
-        if (lastDirection == "right" && this.direction != 'left' && remainder == 0) {
-            this.direction = "right"
-        }
+        let lastDirection = snakeBody[this.index] ? snakeBody[this.index].direction : snakeHead.direction
+
+        this.direction = lastDirection;
     }
-}
-
-let snakeBody = []
-
-document.addEventListener("keydown", keydownHandler)
-
-function keydownHandler(event) {
-    lastKeyPressed = event.key;
 }
 
 function reset() {
@@ -105,9 +91,9 @@ function reset() {
     snakeHead.y = 405;
     applex = 450;
     appley = 405;
-    score = 0
-    snakeHead.direction = "stop"
-    lastKeyPressed = "none"
+    score = 0;
+    snakeHead.direction = "stop";
+    lastKeyPressed = "none";
 }
 
 function checkCollision() {
@@ -137,7 +123,9 @@ function checkCollision() {
         score++;
 
         let lastSegment = snakeBody[snakeBody.length - 1] || snakeHead;
-        snakeBody.push(new SnakeSegment(lastSegment.x, lastSegment.y, snakeBody.length - 1, lastSegment.direction))
+        const direction = directions[lastSegment.direction]
+
+        snakeBody.push(new SnakeSegment(lastSegment.x - 45 * direction[0], lastSegment.y - 45 * direction[1], snakeBody.length - 1, lastSegment.direction))
     }
 }
 
@@ -172,10 +160,10 @@ requestAnimationFrame(loop);
 function loop() {
     checkCollision()
 
-    snakeHead.changeDirection()
-    for (let i = 0; i < snakeBody.length; i++) {
+    for (let i = snakeBody.length - 1; i >= 0; i--) {
         snakeBody[i].changeDirection()
     }
+    snakeHead.changeDirection()
 
     snakeHead.move()
     for (let i = 0; i < snakeBody.length; i++) {
