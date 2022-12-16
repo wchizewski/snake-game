@@ -30,7 +30,7 @@ let snakeHead = {
     x: 90,
     y: 405,
     direction: 'none',
-    speed: 5,
+    speed: 1,
 
     move() {
         const direction = directions[this.direction]
@@ -80,7 +80,12 @@ class SnakeSegment {
     changeDirection() {
         if (remainder != 0) return;
 
-        let lastDirection = snakeBody[this.index] ? snakeBody[this.index].direction : snakeHead.direction
+        let lastDirection;
+        if (snakeBody[this.index - 1]) {
+            lastDirection = snakeBody[this.index - 1].direction;
+        } else {
+            lastDirection = snakeHead.direction;
+        }
 
         this.direction = lastDirection;
     }
@@ -125,7 +130,7 @@ function checkCollision() {
         let lastSegment = snakeBody[snakeBody.length - 1] || snakeHead;
         const direction = directions[lastSegment.direction]
 
-        snakeBody.push(new SnakeSegment(lastSegment.x - 45 * direction[0], lastSegment.y - 45 * direction[1], snakeBody.length - 1, lastSegment.direction))
+        snakeBody.push(new SnakeSegment(lastSegment.x - 45 * direction[0], lastSegment.y - 45 * direction[1], snakeBody.length, lastSegment.direction))
     }
 }
 
