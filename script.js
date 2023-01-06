@@ -155,7 +155,6 @@ function checkCollision() {
         let check4 = appley < wholeSnake[i].y + 45;
 
         if (check1 && check2 && check3 && check4) {
-          console.log("moved");
           return moveApple();
         }
       }
