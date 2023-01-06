@@ -94,10 +94,11 @@ class SnakeSegment {
 function reset() {
   snakeHead.x = 90;
   snakeHead.y = 405;
+  snakeBody = [];
   applex = 450;
   appley = 405;
   score = 0;
-  snakeHead.direction = "stop";
+  snakeHead.direction = "none";
   lastKeyPressed = "none";
 }
 
@@ -122,14 +123,44 @@ function checkCollision() {
     reset();
   }
 
+  for (let i = 3; i < snakeBody.length; i++) {
+    let check1 = snakeHead.x + 45 > snakeBody[i].x;
+    let check2 = snakeHead.x < snakeBody[i].x + 45;
+    let check3 = snakeHead.y + 45 > snakeBody[i].y;
+    let check4 = snakeHead.y < snakeBody[i].y + 45;
+
+    if (check1 && check2 && check3 && check4) {
+      reset();
+    }
+  }
+
   if (
     snakeHead.x < applex + 45 &&
     snakeHead.x + 15 > applex &&
     snakeHead.y + 45 > appley &&
     snakeHead.y < appley + 45
   ) {
-    applex = Math.floor(Math.random() * 20) * 45;
-    appley = Math.floor(Math.random() * 20) * 45;
+    moveApple();
+
+    function moveApple() {
+      let wholeSnake = [...snakeBody, snakeHead];
+
+      applex = Math.floor(Math.random() * 20) * 45;
+      appley = Math.floor(Math.random() * 20) * 45;
+
+      for (let i = 0; i < wholeSnake.length; i++) {
+        let check1 = applex + 45 > wholeSnake[i].x;
+        let check2 = applex < wholeSnake[i].x + 45;
+        let check3 = appley + 45 > wholeSnake[i].y;
+        let check4 = appley < wholeSnake[i].y + 45;
+
+        if (check1 && check2 && check3 && check4) {
+          console.log("moved");
+          return moveApple();
+        }
+      }
+    }
+
     score++;
 
     let lastSegment = snakeBody[snakeBody.length - 1] || snakeHead;
